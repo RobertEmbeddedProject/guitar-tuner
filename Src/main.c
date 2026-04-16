@@ -1,25 +1,10 @@
-#include "main.h"
 
-#include <stdbool.h>
-#include <stdint.h>
-#include <string.h>
-
-#include <stdint.h>
-#include <stdbool.h>
-#include <stddef.h>             //provides ptrs, array size utilities
-#include <FreeRTOS.h>
-#include <semphr.h>             //semaphore APIs
-#include <stm32f7xx_hal.h>      //ST HAL
-#include <task.h>               //vTask APIs
-#include <SEGGER_SYSVIEW.h>
-
-
+#include "IO_init.h"
 
 int main(void)
 {
 
     HAL_Init();
-
     __HAL_RCC_GPIOA_CLK_ENABLE();
     __HAL_RCC_GPIOB_CLK_ENABLE();
     __HAL_RCC_GPIOC_CLK_ENABLE();
@@ -27,6 +12,10 @@ int main(void)
     __HAL_RCC_GPIOE_CLK_ENABLE();
     __HAL_RCC_GPIOF_CLK_ENABLE();
     __HAL_RCC_GPIOG_CLK_ENABLE();
+
+    UART6_Init();
+    const char *msg1 = "heart\r\n";
+    const char *msg2 = "beat\r\n";
     
     GPIO_InitTypeDef GPIO_InitStruct = {0};
 
@@ -42,28 +31,10 @@ int main(void)
     while (1)
     {
         HAL_GPIO_WritePin(GPIOE, GPIO_PIN_9, GPIO_PIN_SET);
-        HAL_Delay(1000);
+        HAL_Delay(200);
+        HAL_UART_Transmit(&huart6, (uint8_t*)msg1, strlen(msg1), HAL_MAX_DELAY);
         HAL_GPIO_WritePin(GPIOE, GPIO_PIN_9, GPIO_PIN_RESET);
-        HAL_Delay(1000);
+        HAL_Delay(200);
+        HAL_UART_Transmit(&huart6, (uint8_t*)msg2, strlen(msg2), HAL_MAX_DELAY);
     }
 }
-
-void Error_Handler(void)
-{
-    while (1)
-    {
-    }
-}
-
-#ifdef USE_FULL_ASSERT
-void assert_failed(uint8_t *file, uint32_t line)
-{
-    (void)file;
-    (void)line;
-
-    while (1)
-    {
-        // Optional: breakpoint here
-    }
-}
-#endif
