@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "STM32 ST-LINK Debug",
+      "type": "cortex-debug",
+      "request": "launch",
+      "servertype": "stlink",
+      "cwd": "${workspaceFolder}",
+      "executable": "${workspaceFolder}/build/guitar_pedal.elf",
+      "device": "STM32F767ZITx",
+      "interface": "swd",
+      "runToEntryPoint": "main"
+    }
+  ]
+}
