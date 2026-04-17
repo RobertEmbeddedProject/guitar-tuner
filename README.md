@@ -1,6 +1,4 @@
-# PROJECT_NAME
-
-STM32F767ZI Guitar Tuner
+# STM32 Guitar Tuner
 
 This project uses Multiple LEDs as the visual representation of the tuning of a guitar analog signal (A0).
 

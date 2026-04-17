@@ -2,6 +2,9 @@
 #still tracking:
 #.ioc (if exists), Core/, Drivers/, startup/, cmake/, CMakeLists.txt, CMakePresets.json, your App/, BSP/, UI/, ThirdParty/lvgl/
 
+#ignore some testing scripts
+Src/python_graph.c
+Inc/python_graph.h
 
 # Build output
 build/
