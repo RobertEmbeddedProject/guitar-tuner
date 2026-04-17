@@ -1,4 +1,6 @@
 #include "IO_init.h"
+#include "python_graph.h"
+#include <string.h>
 
 UART_HandleTypeDef huart6;
 ADC_HandleTypeDef hadc1;
@@ -60,13 +62,13 @@ void MX_ADC1_Init(void){
     hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
     hadc1.Init.Resolution = ADC_RESOLUTION_12B;
     hadc1.Init.ScanConvMode = ADC_SCAN_DISABLE;
-    hadc1.Init.ContinuousConvMode = DISABLE;
+    hadc1.Init.ContinuousConvMode = DISABLE;                                 //had to disable to prevent overruning the consumer
     hadc1.Init.DiscontinuousConvMode = DISABLE;
-    hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
-    hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+    hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;       //set to rising edge
+    hadc1.Init.ExternalTrigConv = ADC_EXTERNALTRIGCONV_T2_TRGO;              //External trigger
     hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
     hadc1.Init.NbrOfConversion = 1;
-    hadc1.Init.DMAContinuousRequests = DISABLE;
+    hadc1.Init.DMAContinuousRequests = ENABLE;
     hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
 
     /*Added this block from CubeMX after hardware change to include DMA*/
@@ -82,26 +84,58 @@ void MX_ADC1_Init(void){
     hdma_adc1.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
 
     //this is critical for DMA interrupts to know which peripheral owns the DMA stream
+    
+    if (HAL_DMA_Init(&hdma_adc1) != HAL_OK)
+    {
+      Error_Handler();
+    }
+
     __HAL_LINKDMA(&hadc1, DMA_Handle, hdma_adc1);
 
     if (HAL_ADC_Init(&hadc1) != HAL_OK)
     {
         Error_Handler();
     }
-    if (HAL_DMA_Init(&hdma_adc1) != HAL_OK)
-    {
-      Error_Handler();
-    }
+    
 
     /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.*/
     sConfig.Channel = ADC_CHANNEL_3;
     sConfig.Rank = ADC_REGULAR_RANK_1;
-    sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+    sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;                //Change sample time for python reading
     if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
     {
         Error_Handler();
     }
 }
+
+//IRQ handler declared so that half and full callbacks will fire
+void DMA2_Stream0_IRQHandler(void)
+{
+    HAL_DMA_IRQHandler(&hdma_adc1);
+}
+
+void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
+{
+    if (hadc->Instance == ADC1)
+    {
+        memcpy((void *)latest_uart_samples, &adc_dma_buf[0], SAMPLES * sizeof(uint16_t));
+        latest_uart_chunk_id = 0;
+        latest_uart_seq++;
+        latest_uart_ready = 1;
+    }
+}
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
+{
+    if (hadc->Instance == ADC1)
+    {
+        memcpy((void *)latest_uart_samples, &adc_dma_buf[SAMPLES], SAMPLES * sizeof(uint16_t));
+        latest_uart_chunk_id = 1;
+        latest_uart_seq++;
+        latest_uart_ready = 1;
+    }
+}
+
 
 
 void Error_Handler(void)

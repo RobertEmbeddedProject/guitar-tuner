@@ -82,3 +82,6 @@ Memory increment enabled: each new sample should go to the next element in the b
 Half Word / Half Word: ADC samples are naturally 16-bit in HAL buffers, even if the converter is 12-bit
 FIFO disabled: Not neccessary, as far as I have read, this is added complexity for minimal gain in this application
 
+With the circular buffer, I used half and full callbacks to be read by the CPU so that data would not get read
+while also being written to by the DMA buffer.
+
