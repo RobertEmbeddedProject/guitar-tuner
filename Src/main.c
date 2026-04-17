@@ -18,6 +18,7 @@
 int main(void)
 {
     HAL_Init();
+    __HAL_RCC_DMA2_CLK_ENABLE();
     __HAL_RCC_GPIOA_CLK_ENABLE();
     __HAL_RCC_GPIOB_CLK_ENABLE();
     __HAL_RCC_GPIOC_CLK_ENABLE();
@@ -27,11 +28,20 @@ int main(void)
     __HAL_RCC_GPIOG_CLK_ENABLE();
 
     UART6_Init();
+    MX_TIM2_Init();
     MX_ADC1_Init();
     /*For Serial Monitoring
     const char *msg1 = "heart\r\n";
     const char *msg2 = "beat\r\n";
     */
+    if (HAL_ADC_Start_DMA(&hadc1, (uint32_t *)adc_dma_buf, 2 * SAMPLES) != HAL_OK)
+    {
+        Error_Handler();
+    }
+    if (HAL_TIM_Base_Start(&htim2) != HAL_OK)
+    {
+        Error_Handler();
+    }
 
     
     GPIO_InitTypeDef GPIO_InitStruct = {0};

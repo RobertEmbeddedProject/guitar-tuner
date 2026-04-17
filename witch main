@@ -1,0 +1,24 @@
+[33mc2ba593[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mrestore-c2ba593[m[33m, [m[1;32mmain[m[33m, [m[1;32madvanced-sampling[m[33m)[m refs/heads/restore-c2ba593@{Fri Apr 17 18:51:33 2026}: branch: Created from c2ba593
+[33mc2ba593[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mrestore-c2ba593[m[33m, [m[1;32mmain[m[33m, [m[1;32madvanced-sampling[m[33m)[m HEAD@{Fri Apr 17 18:51:33 2026}: checkout: moving from advanced-sampling to restore-c2ba593
+[33mc2ba593[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mrestore-c2ba593[m[33m, [m[1;32mmain[m[33m, [m[1;32madvanced-sampling[m[33m)[m HEAD@{Fri Apr 17 18:48:15 2026}: reset: moving to c2ba593
+[33mc2ba593[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mrestore-c2ba593[m[33m, [m[1;32mmain[m[33m, [m[1;32madvanced-sampling[m[33m)[m refs/heads/advanced-sampling@{Fri Apr 17 18:45:08 2026}: reset: moving to c2ba593
+[33mc2ba593[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mrestore-c2ba593[m[33m, [m[1;32mmain[m[33m, [m[1;32madvanced-sampling[m[33m)[m HEAD@{Fri Apr 17 18:45:08 2026}: reset: moving to c2ba593
+[33m84e00b2[m[33m ([m[1;31morigin/advanced-sampling[m[33m)[m HEAD@{Fri Apr 17 18:44:56 2026}: reset: moving to 84e00b2
+[33m84e00b2[m[33m ([m[1;31morigin/advanced-sampling[m[33m)[m refs/remotes/origin/advanced-sampling@{Fri Apr 17 18:39:04 2026}: update by push
+[33m84e00b2[m[33m ([m[1;31morigin/advanced-sampling[m[33m)[m refs/heads/advanced-sampling@{Fri Apr 17 18:38:48 2026}: commit: Overcomplicated sampling that technically works
+[33m84e00b2[m[33m ([m[1;31morigin/advanced-sampling[m[33m)[m HEAD@{Fri Apr 17 18:38:48 2026}: commit: Overcomplicated sampling that technically works
+[33mc2ba593[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mrestore-c2ba593[m[33m, [m[1;32mmain[m[33m, [m[1;32madvanced-sampling[m[33m)[m refs/heads/advanced-sampling@{Fri Apr 17 18:38:21 2026}: branch: Created from HEAD
+[33mc2ba593[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mrestore-c2ba593[m[33m, [m[1;32mmain[m[33m, [m[1;32madvanced-sampling[m[33m)[m HEAD@{Fri Apr 17 18:38:21 2026}: checkout: moving from main to advanced-sampling
+[33mc2ba593[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mrestore-c2ba593[m[33m, [m[1;32mmain[m[33m, [m[1;32madvanced-sampling[m[33m)[m refs/heads/main@{Fri Apr 17 17:08:25 2026}: commit: Added DMA init
+[33mc2ba593[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mrestore-c2ba593[m[33m, [m[1;32mmain[m[33m, [m[1;32madvanced-sampling[m[33m)[m HEAD@{Fri Apr 17 17:08:25 2026}: commit: Added DMA init
+[33m823c4ae[m[33m ([m[1;31morigin/main[m[33m)[m refs/remotes/origin/main@{Fri Apr 17 11:55:51 2026}: update by push
+[33m823c4ae[m[33m ([m[1;31morigin/main[m[33m)[m refs/heads/main@{Fri Apr 17 11:55:43 2026}: commit: Added polling analog input and and python monitoring
+[33m823c4ae[m[33m ([m[1;31morigin/main[m[33m)[m HEAD@{Fri Apr 17 11:55:43 2026}: commit: Added polling analog input and and python monitoring
+[33m711b5b4[m refs/remotes/origin/main@{Thu Apr 16 17:04:53 2026}: update by push
+[33m711b5b4[m refs/heads/main@{Thu Apr 16 17:04:44 2026}: commit: Added UART heartbeat and separate driver module
+[33m711b5b4[m HEAD@{Thu Apr 16 17:04:44 2026}: commit: Added UART heartbeat and separate driver module
+[33m96490ab[m refs/remotes/origin/main@{Thu Apr 16 13:19:36 2026}: update by push
+[33m96490ab[m refs/heads/main@{Thu Apr 16 13:19:26 2026}: Branch: renamed refs/heads/master to refs/heads/main
+[33m96490ab[m HEAD@{Thu Apr 16 13:19:26 2026}: Branch: renamed refs/heads/master to refs/heads/main
+[33m96490ab[m refs/heads/main@{Thu Apr 16 13:18:36 2026}: commit (initial): Initial hardware test and LED blink
+[33m96490ab[m HEAD@{Thu Apr 16 13:18:36 2026}: commit (initial): Initial hardware test and LED blink
