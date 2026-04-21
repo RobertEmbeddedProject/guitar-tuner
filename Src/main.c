@@ -30,6 +30,7 @@ int main(void)
     UART6_Init();
     MX_TIM2_Init();
     MX_ADC1_Init();
+    LED_Init();
     /*For Serial Monitoring
     const char *msg1 = "heart\r\n";
     const char *msg2 = "beat\r\n";
@@ -58,6 +59,13 @@ int main(void)
     while (1)
     {
         python_graph();
+
+        for(int i=0; i<19; i++){
+            LED_ON(i);
+            HAL_Delay(30);
+            LED_OFF(i);
+        }
+        
 
         /* Serial Print to Putty for monitor troubleshooting
         HAL_GPIO_WritePin(GPIOE, GPIO_PIN_9, GPIO_PIN_SET);
