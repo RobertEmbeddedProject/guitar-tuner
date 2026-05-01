@@ -3,6 +3,7 @@
 #.ioc (if exists), Core/, Drivers/, startup/, cmake/, CMakeLists.txt, CMakePresets.json, your App/, BSP/, UI/, ThirdParty/lvgl/
 
 #ignore some testing scripts
+Src/yin_tuner2.c
 Src/python_graph.c
 Inc/python_graph.h
 

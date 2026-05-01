@@ -68,7 +68,8 @@ include_directories(
 set(PROJECT_SOURCES
     Src/main.c
     Src/IO_init.c
-    Src/python_graph.c
+    #Src/python_graph.c
+    Src/yin_tuner.c
     Src/stm32f7xx_hal_msp.c
     Src/stm32f7xx_it.c
     Src/syscalls.c
