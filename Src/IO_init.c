@@ -121,9 +121,9 @@ void MX_TIM2_Init(void)
     __HAL_RCC_TIM2_CLK_ENABLE();
 
     htim2.Instance = TIM2;
-    htim2.Init.Prescaler = 15;
+    htim2.Init.Prescaler = 53;   //changed from 15
     htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-    htim2.Init.Period = 49; //changed from 124 to 49 for 8000 Hz to 20000 Hz
+    htim2.Init.Period = 99; //changed from 124 to 49 for 8000 Hz to 20000 Hz, then to 99 for 16 to 216MHz Clock
     htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
     htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
 
@@ -239,8 +239,10 @@ void Error_Handler(void)
 
 void assert_failed(uint8_t *file, uint32_t line)
 {
-    (void)file;
-    (void)line;
+    volatile uint8_t *assert_file = file;
+    volatile uint32_t assert_line = line;
+
+    __asm volatile ("bkpt #0");
 
     while (1)
     {

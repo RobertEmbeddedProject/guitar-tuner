@@ -3,38 +3,16 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 #define MAX_SAMPLES 2048
-#define MIN_FREQ 70.0f
-#define MAX_FREQ 400.0f
+#define MIN_FREQ 75.0f    //70.0f
+#define MAX_FREQ 90.0f    //400.0f test: for temporary low e testing only!!
 #define YIN_THRESHOLD 0.15f
 
 static float x[MAX_SAMPLES];
 static float diff[MAX_SAMPLES / 2];
 static float normdiff[MAX_SAMPLES / 2];
-
-//Step 5 of Yin Method: Parabolic Interpolation
-//Equation ref see: https://ccrma.stanford.edu/~jos/sasp/Quadratic_Interpolation_Spectral_Peaks.html
-static float parab_interpolation(const float *arr, uint32_t tau)
-{
-    //take 3 points of min point of parabola
-    float x0 = arr[tau - 1];
-    float x1 = arr[tau];
-    float x2 = arr[tau + 1];
-
-    return (float)tau + 0.5f * (x0 - x2) / (x0 - 2.0f * x1 + x2);
-}
-
-/*
-r'_t(tau) = x[t+1] * x[t+1+tau]
-          + x[t+2] * x[t+2+tau]
-          + x[t+3] * x[t+3+tau]
-          + ...
-          + x[t+W-tau] * x[t+W]
-
-    tau = lag
-    W   = window size
-*/
 
 YIN_Result_t YIN_DetectPitch(const uint16_t *adc_buf, uint32_t n, float sample_rate_hz)
 {
@@ -152,12 +130,26 @@ YIN_Result_t YIN_DetectPitch(const uint16_t *adc_buf, uint32_t n, float sample_r
 
     result.valid = 1;
 
+    //needs to have target_hz adjusted.
+    result.cents = 1200.0f * log2f(result.freq_hz / 82.41f /*target_hz*/);
+
     return result;
 }
 
+//Step 5 of Yin Method: Parabolic Interpolation
+//Equation ref see: https://ccrma.stanford.edu/~jos/sasp/Quadratic_Interpolation_Spectral_Peaks.html
+float parab_interpolation(const float *arr, uint32_t tau)
+{
+    //take 3 points of min point of parabola
+    float x0 = arr[tau - 1];
+    float x1 = arr[tau];
+    float x2 = arr[tau + 1];
+
+    return (float)tau + 0.5f * (x0 - x2) / (x0 - 2.0f * x1 + x2);
+}
 
 //puTTy Frequency Confidence Printing
-void PrintPitchResult(YIN_Result_t r)
+void YIN_print(YIN_Result_t r, uint32_t led)
 {
     char msg[128];
     int len;
@@ -166,13 +158,15 @@ void PrintPitchResult(YIN_Result_t r)
     {
         uint32_t freq_x100 = (uint32_t)(r.freq_hz * 100.0f);
         uint32_t conf_x100 = (uint32_t)(r.confidence * 100.0f);
+        int32_t cents_x100 = (int32_t)(r.cents * 100.0f);
 
         len = snprintf(msg, sizeof(msg),
-                       "freq=%lu.%02lu Hz confidence=%lu.%02lu GOOD\r\n",
-                       freq_x100 / 100,
-                       freq_x100 % 100,
-                       conf_x100 / 100,
-                       conf_x100 % 100);
+               "freq=%lu.%02lu Hz cents=%ld.%02ld LED=P%lu\r\n",
+               freq_x100 / 100,
+               freq_x100 % 100,
+               cents_x100 / 100,
+               labs(cents_x100 % 100),
+               led);
     }
     else
     {
@@ -182,3 +176,4 @@ void PrintPitchResult(YIN_Result_t r)
 
     HAL_UART_Transmit(&huart6, (uint8_t *)msg, len, HAL_MAX_DELAY);
 }
+
