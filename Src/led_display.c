@@ -4,6 +4,7 @@
 
 #define cents_width 10
 
+//LED moving scale; suggests LED to illuminate based on pitch using frequency (cents)
 uint32_t LED_tuning_ind(float cents)
 {
     if (fabsf(cents) <= 5.0f)

@@ -74,6 +74,12 @@ void LED_OFF(uint16_t position){
     HAL_GPIO_WritePin(tuning_led[position].port, tuning_led[position].pin, GPIO_PIN_RESET);
 }
 
+void LED_all_off(){
+    for(uint16_t i=0; i<19; i++){
+        LED_OFF(i);
+    }
+}
+
 void blink_status(){
     HAL_GPIO_WritePin(status_led[0].port, status_led[0].pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(status_led[1].port, status_led[1].pin, GPIO_PIN_SET);

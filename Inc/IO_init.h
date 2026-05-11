@@ -15,6 +15,7 @@ void LED_Init(void);
 
 void LED_ON(uint16_t position);
 void LED_OFF(uint16_t position);
+void LED_all_off();
 void blink_status();
 
 void Error_Handler(void);

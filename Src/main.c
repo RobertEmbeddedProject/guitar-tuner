@@ -64,8 +64,21 @@ int main(void)
             YIN_Result_t r = YIN_DetectPitch(&adc_dma_buf[0],
                                             DMA_HALF_SAMPLES,
                                             SAMPLE_RATE_HZ);
-            next_LED = LED_tuning_ind(r.cents);
-            YIN_print(r, next_LED);
+
+            if (r.valid && r.confidence > 0.80f)
+            {
+                next_LED = LED_tuning_ind(r.cents);
+                YIN_print(r, next_LED);
+
+                LED_all_off();
+                LED_ON(next_LED);
+
+                prev_LED = next_LED;
+            }
+            else
+            {
+                LED_all_off();
+            }
         }
 
         if (adc_full_ready)
@@ -75,51 +88,25 @@ int main(void)
             YIN_Result_t r = YIN_DetectPitch(&adc_dma_buf[DMA_HALF_SAMPLES],
                                             DMA_HALF_SAMPLES,
                                             SAMPLE_RATE_HZ);
-            next_LED = LED_tuning_ind(r.cents);
-            YIN_print(r, next_LED);
-        }   
 
-        LED_OFF(prev_LED);
-        LED_ON(next_LED);
-        prev_LED = next_LED;
-        //HAL_Delay(100); //vTaskDelay(20 / portTICK_PERIOD_MS);
+            if (r.valid && r.confidence > 0.80f)
+            {
+                next_LED = LED_tuning_ind(r.cents);
+                YIN_print(r, next_LED);
+
+                LED_all_off();
+                LED_ON(next_LED);
+
+                prev_LED = next_LED;
+            }
+            else
+            {
+                LED_all_off();
+            }
+        }
     }
 }
 
-//For Troubleshooting purposes
-void test_print(void){
-        //Print graph to serial_print.py
-        //python_graph();
-
-        /* PuTTy COM7 printing. Not useful unless printing ASCII.
-        int len = snprintf(msg, sizeof(msg),
-        "%u,%u,%u,%u\r\n",
-        adc_dma_buf[0],
-        adc_dma_buf[1],
-        adc_dma_buf[2],
-        adc_dma_buf[3]);
-        HAL_UART_Transmit(&huart6, (uint8_t*)msg, len, HAL_MAX_DELAY);
-        //Port COM7, BAUD 460800
-        HAL_Delay(200);
-        */
-
-        /*  LED Cycle for all outputs
-        for(int i=0; i<19; i++){
-            LED_ON(i);
-            HAL_Delay(100);
-            LED_OFF(i);
-        }
-        */
-
-        /* (OLD) Serial Print to Putty for monitor troubleshooting
-        HAL_GPIO_WritePin(GPIOE, GPIO_PIN_9, GPIO_PIN_SET);
-        HAL_Delay(200);
-        HAL_UART_Transmit(&huart6, (uint8_t*)msg1, strlen(msg1), HAL_MAX_DELAY);
-        HAL_GPIO_WritePin(GPIOE, GPIO_PIN_9, GPIO_PIN_RESET);
-        HAL_Delay(200);
-        HAL_UART_Transmit(&huart6, (uint8_t*)msg2, strlen(msg2), HAL_MAX_DELAY);
-        */
-}
 
 void SystemClock_Config(void)
 {
