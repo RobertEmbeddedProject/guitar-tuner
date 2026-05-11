@@ -69,7 +69,6 @@ set(PROJECT_SOURCES
     Src/main.c
     Src/IO_init.c
     Src/led_display.c
-    Src/guitar_pitch.c
     #Src/python_graph.c
     Src/yin_tuner.c
     Src/stm32f7xx_hal_msp.c

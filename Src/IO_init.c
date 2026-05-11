@@ -10,6 +10,61 @@ volatile uint8_t adc_half_ready = 0;
 volatile uint8_t adc_full_ready = 0;
 
 
+void SystemClock_Config(void)
+{
+    RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+    RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+
+    __HAL_RCC_PWR_CLK_ENABLE();
+    __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+    RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+    RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+
+    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+
+    /*
+     * HSI = 16 MHz
+     * VCO input = 16 MHz / 8 = 2 MHz
+     * VCO output = 2 MHz * 216 = 432 MHz
+     * SYSCLK = 432 MHz / 2 = 216 MHz
+     */
+    RCC_OscInitStruct.PLL.PLLR = 2;
+    RCC_OscInitStruct.PLL.PLLM = 8;
+    RCC_OscInitStruct.PLL.PLLN = 216;
+    RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+    RCC_OscInitStruct.PLL.PLLQ = 9;
+
+    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+    if (HAL_PWREx_EnableOverDrive() != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+    RCC_ClkInitStruct.ClockType =
+        RCC_CLOCKTYPE_SYSCLK |
+        RCC_CLOCKTYPE_HCLK |
+        RCC_CLOCKTYPE_PCLK1 |
+        RCC_CLOCKTYPE_PCLK2;
+
+    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+
+    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_7) != HAL_OK)
+    {
+        Error_Handler();
+    }
+}
+
+
 void LED_Init(void)
 {
     GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -35,62 +90,6 @@ void LED_Init(void)
 
     GPIO_InitStruct.Pin = GPIO_PIN_14 | GPIO_PIN_9;
     HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
-}
-
-static const LED tuning_led[19] = {
-    {GPIOD, GPIO_PIN_7},   // P0 Red1
-    {GPIOD, GPIO_PIN_6},   // P1 Red2
-    {GPIOD, GPIO_PIN_5},   // P2 Red3
-    {GPIOD, GPIO_PIN_4},   // P3 Red4
-    {GPIOE, GPIO_PIN_2},   // P4 Yel1
-    {GPIOE, GPIO_PIN_4},   // P5 Yel2
-    {GPIOE, GPIO_PIN_5},   // P6 Yel3
-    {GPIOE, GPIO_PIN_6},   // P7 Yel4
-    {GPIOF, GPIO_PIN_13},  // P8 Grn1
-    {GPIOE, GPIO_PIN_9},   // P9 Grn2
-    {GPIOE, GPIO_PIN_11},  // P10 Grn3
-    {GPIOE, GPIO_PIN_13},  // P11 Yel5
-    {GPIOF, GPIO_PIN_15},  // P12 Yel6
-    {GPIOG, GPIO_PIN_14},  // P13 Yel7
-    {GPIOG, GPIO_PIN_9},   // P14 Yel8
-    {GPIOE, GPIO_PIN_14},  // P15 Red5
-    {GPIOE, GPIO_PIN_15},  // P16 Red6
-    {GPIOB, GPIO_PIN_10},  // P17 Red7
-    {GPIOB, GPIO_PIN_11}   // P18 Red8
-};
-
-static const LED status_led[4] = {
-    {GPIOD, GPIO_PIN_3},   // P0 Wht1
-    {GPIOF, GPIO_PIN_8},   // P1 Wht2
-    {GPIOF, GPIO_PIN_14},  // P2 Wht3
-    {GPIOE, GPIO_PIN_12},  // P3 Wht4
-};
-
-void LED_ON(uint16_t position){
-    HAL_GPIO_WritePin(tuning_led[position].port, tuning_led[position].pin, GPIO_PIN_SET);
-}
-
-void LED_OFF(uint16_t position){
-    HAL_GPIO_WritePin(tuning_led[position].port, tuning_led[position].pin, GPIO_PIN_RESET);
-}
-
-void LED_all_off(){
-    for(uint16_t i=0; i<19; i++){
-        LED_OFF(i);
-    }
-}
-
-void blink_status(){
-    HAL_GPIO_WritePin(status_led[0].port, status_led[0].pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(status_led[1].port, status_led[1].pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(status_led[2].port, status_led[2].pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(status_led[3].port, status_led[3].pin, GPIO_PIN_SET);
-    HAL_Delay(200); //vTaskDelay(20 / portTICK_PERIOD_MS);
-    HAL_GPIO_WritePin(status_led[0].port, status_led[0].pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(status_led[1].port, status_led[1].pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(status_led[2].port, status_led[2].pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(status_led[3].port, status_led[3].pin, GPIO_PIN_RESET);
-    HAL_Delay(200); //vTaskDelay(20 / portTICK_PERIOD_MS);
 }
 
 void UART6_Init(void)

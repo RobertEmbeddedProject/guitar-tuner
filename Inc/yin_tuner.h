@@ -1,6 +1,4 @@
-#ifndef YIN_TUNER_H
-#define YIN_TUNER_H
-
+#pragma once
 #include <stdint.h>
 
 typedef struct
@@ -16,5 +14,3 @@ YIN_Result_t YIN_DetectPitch(const uint16_t *adc_buf,
                              float sample_rate_hz);
 
 void YIN_print(YIN_Result_t r, float cents, uint32_t led);
-
-#endif

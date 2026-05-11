@@ -145,9 +145,7 @@ float parab_interpolation(const float *arr, uint32_t tau)
 }
 
 
-
-
-//puTTy Frequency Confidence Printing
+//puTTy Frequency Confidence Printing for troubleshooting:
 void YIN_print(YIN_Result_t r, float cents, uint32_t led)
 {
     char msg[128];
@@ -156,7 +154,6 @@ void YIN_print(YIN_Result_t r, float cents, uint32_t led)
     if (r.valid)
     {
         uint32_t freq_x100 = (uint32_t)(r.freq_hz * 100.0f);
-        uint32_t conf_x100 = (uint32_t)(r.confidence * 100.0f);
         int32_t cents_x100 = (int32_t)(cents * 100.0f);
 
         len = snprintf(msg, sizeof(msg),
