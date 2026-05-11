@@ -1,5 +1,4 @@
 #include "yin_tuner.h"
-#include "IO_init.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -39,9 +38,18 @@ YIN_Result_t YIN_DetectPitch(const uint16_t *adc_buf, uint32_t n, float sample_r
     }
 
     //remove DC offset of hardware voltage bias
+    //Originally used 2048 just for ideal testing, but real mid-range ADC counts vary
+    float mean = 0.0f;
     for (uint32_t i = 0; i < n; i++)
     {
-        x[i] = (float)adc_buf[i] - 2048;
+        mean += (float)adc_buf[i];
+    }
+
+    mean /= (float)n;
+
+    for (uint32_t i = 0; i < n; i++)
+    {
+        x[i] = (float)adc_buf[i] - mean;
     }
 
     //Step 2 of Yin Method: Difference Function
@@ -145,31 +153,5 @@ float parab_interpolation(const float *arr, uint32_t tau)
 }
 
 
-//puTTy Frequency Confidence Printing for troubleshooting:
-void YIN_print(YIN_Result_t r, float cents, uint32_t led)
-{
-    char msg[128];
-    int len;
 
-    if (r.valid)
-    {
-        uint32_t freq_x100 = (uint32_t)(r.freq_hz * 100.0f);
-        int32_t cents_x100 = (int32_t)(cents * 100.0f);
-
-        len = snprintf(msg, sizeof(msg),
-               "freq=%lu.%02lu Hz cents=%ld.%02ld LED=P%lu\r\n",
-               freq_x100 / 100,
-               freq_x100 % 100,
-               cents_x100 / 100,
-               labs(cents_x100 % 100),
-               led);
-    }
-    else
-    {
-        len = snprintf(msg, sizeof(msg),
-                       "freq=--- Hz confidence=0.00 BAD\r\n");
-    }
-
-    HAL_UART_Transmit(&huart6, (uint8_t *)msg, len, HAL_MAX_DELAY);
-}
 

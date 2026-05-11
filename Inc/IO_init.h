@@ -8,8 +8,6 @@ extern TIM_HandleTypeDef htim2;
 extern volatile uint8_t adc_half_ready;
 extern volatile uint8_t adc_full_ready;
 
-typedef struct{GPIO_TypeDef *port; uint16_t pin;} LED;
-
 void SystemClock_Config(void);
 void LED_Init(void);
 void UART6_Init(void);

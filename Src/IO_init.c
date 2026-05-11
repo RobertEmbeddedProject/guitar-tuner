@@ -126,9 +126,9 @@ void MX_TIM2_Init(void)
     __HAL_RCC_TIM2_CLK_ENABLE();
 
     htim2.Instance = TIM2;
-    htim2.Init.Prescaler = 53;   //changed from 15
+    htim2.Init.Prescaler = 53;   //test:
     htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-    htim2.Init.Period = 99; //changed from 124 to 49 for 8000 Hz to 20000 Hz, then to 99 for 16 to 216MHz Clock
+    htim2.Init.Period = 99; //test:
     htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
     htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
 
@@ -237,8 +237,12 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 //from CubeMX
 void Error_Handler(void)
 {
+    __disable_irq();
+    __asm volatile ("bkpt #0");
+
     while (1)
     {
+        //Add white status LEDs blinking as alarm to user
     }
 }
 
