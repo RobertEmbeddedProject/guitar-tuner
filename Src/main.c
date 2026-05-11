@@ -2,8 +2,11 @@
 #include "yin_tuner.h"
 #include "led_display.h"
 #include <stdio.h>
+#include <math.h>
 #include "main.h"
 //#include "python_graph.h"
+
+static int FindClosestString(float freq_hz);
 
 #define SAMPLE_RATE_HZ 20000.0f
 #define DMA_HALF_SAMPLES 2048
@@ -11,6 +14,24 @@
 uint16_t adc_dma_buf[DMA_TOTAL_SAMPLES];
 
 void SystemClock_Config(void);
+
+typedef struct
+{
+    const char *name;
+    float freq_hz;
+} GuitarString_t;
+
+//extern cents = 1200.0f * log2f(measured_hz / target_hz);
+static const GuitarString_t strings[] =
+{
+    {"Low E", 82.41f},
+    {"A",     110.00f},
+    {"D",     146.83f},
+    {"G",     196.00f},
+    {"B",     246.94f},
+    {"High E",329.63f}
+};
+
 
 int main(void)
 {
@@ -43,18 +64,10 @@ int main(void)
         Error_Handler();
     }
 
-    //Temporarily fill test: buffer for LED work
-    /*
-    for (uint32_t i = 2048; i < 4096; i++)
-        {
-            adc_dma_buf[i] = 2048 + (i % 243 < 121 ? 400 : -400);
-        }
-*/
-
     volatile uint32_t next_LED = 0;
-    volatile uint32_t prev_LED = 0;
+    //volatile uint32_t prev_LED = 0;
 
-    //Main Loop
+    // Main Loop
     while (1)
     {
         if (adc_half_ready)
@@ -67,13 +80,19 @@ int main(void)
 
             if (r.valid && r.confidence > 0.80f)
             {
-                next_LED = LED_tuning_ind(r.cents);
-                YIN_print(r, next_LED);
+                int string_index = FindClosestString(r.freq_hz);
+
+                float target_hz = strings[string_index].freq_hz;
+
+                float cents =
+                    1200.0f * log2f(r.freq_hz / target_hz);
+
+                next_LED = LED_tuning_ind(cents);
+
+                YIN_print(r, cents, next_LED);
 
                 LED_all_off();
                 LED_ON(next_LED);
-
-                prev_LED = next_LED;
             }
             else
             {
@@ -91,13 +110,19 @@ int main(void)
 
             if (r.valid && r.confidence > 0.80f)
             {
-                next_LED = LED_tuning_ind(r.cents);
-                YIN_print(r, next_LED);
+                int string_index = FindClosestString(r.freq_hz);
+
+                float target_hz = strings[string_index].freq_hz;
+
+                float cents =
+                    1200.0f * log2f(r.freq_hz / target_hz);
+
+                next_LED = LED_tuning_ind(cents);
+
+                YIN_print(r, cents, next_LED);
 
                 LED_all_off();
                 LED_ON(next_LED);
-
-                prev_LED = next_LED;
             }
             else
             {
@@ -105,6 +130,27 @@ int main(void)
             }
         }
     }
+}
+
+static int FindClosestString(float freq_hz)
+{
+    int best_index = 0;
+    float best_error = 999999.0f;
+
+    for (int i = 0; i < 6; i++)
+    {
+        float error = fabsf(
+            1200.0f * log2f(freq_hz / strings[i].freq_hz)
+        );
+
+        if (error < best_error)
+        {
+            best_error = error;
+            best_index = i;
+        }
+    }
+
+    return best_index;
 }
 
 

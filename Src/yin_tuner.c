@@ -6,8 +6,6 @@
 #include <stdlib.h>
 
 #define MAX_SAMPLES 2048
-#define MIN_FREQ 75.0f    //70.0f
-#define MAX_FREQ 90.0f    //400.0f test: for temporary low e testing only!!
 #define YIN_THRESHOLD 0.15f
 
 static float x[MAX_SAMPLES];
@@ -19,6 +17,11 @@ YIN_Result_t YIN_DetectPitch(const uint16_t *adc_buf, uint32_t n, float sample_r
     //initialize
     YIN_Result_t result = {0};
 
+    #define MIN_FREQ 61.0f
+    #define MAX_FREQ 412.0f
+    uint32_t min_tau = (uint32_t)(sample_rate_hz / MAX_FREQ);
+    uint32_t max_tau = (uint32_t)(sample_rate_hz / MIN_FREQ); 
+
     //limit check. 512 is min for good data (2 cycles)
     if(n > MAX_SAMPLES){
         n = MAX_SAMPLES;
@@ -26,10 +29,6 @@ YIN_Result_t YIN_DetectPitch(const uint16_t *adc_buf, uint32_t n, float sample_r
     if(n < 512){
         return result;
     }
-
-    //cast to convert float to integer for array index refer
-    uint32_t min_tau = (uint32_t)(sample_rate_hz / MAX_FREQ);
-    uint32_t max_tau = (uint32_t)(sample_rate_hz / MIN_FREQ);
 
     //limit check; don't search for periods longer than half of window
     if (max_tau >= (n / 2)){
@@ -130,9 +129,6 @@ YIN_Result_t YIN_DetectPitch(const uint16_t *adc_buf, uint32_t n, float sample_r
 
     result.valid = 1;
 
-    //needs to have target_hz adjusted.
-    result.cents = 1200.0f * log2f(result.freq_hz / 82.41f /*target_hz*/);
-
     return result;
 }
 
@@ -151,9 +147,8 @@ float parab_interpolation(const float *arr, uint32_t tau)
 
 
 
-
 //puTTy Frequency Confidence Printing
-void YIN_print(YIN_Result_t r, uint32_t led)
+void YIN_print(YIN_Result_t r, float cents, uint32_t led)
 {
     char msg[128];
     int len;
@@ -162,7 +157,7 @@ void YIN_print(YIN_Result_t r, uint32_t led)
     {
         uint32_t freq_x100 = (uint32_t)(r.freq_hz * 100.0f);
         uint32_t conf_x100 = (uint32_t)(r.confidence * 100.0f);
-        int32_t cents_x100 = (int32_t)(r.cents * 100.0f);
+        int32_t cents_x100 = (int32_t)(cents * 100.0f);
 
         len = snprintf(msg, sizeof(msg),
                "freq=%lu.%02lu Hz cents=%ld.%02ld LED=P%lu\r\n",
