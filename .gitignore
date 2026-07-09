@@ -1,0 +1,39 @@
+
+#still tracking:
+#.ioc (if exists), Core/, Drivers/, startup/, cmake/, CMakeLists.txt, CMakePresets.json, your App/, BSP/, UI/, ThirdParty/lvgl/
+
+#ignore some testing scripts
+Src/yin_tuner2.c
+Src/python_graph.c
+Inc/python_graph.h
+
+# Build output
+build/
+cmake-build-*/
+Debug/
+Release/
+
+# CMake local/generated cache
+CMakeCache.txt
+CMakeFiles/
+CMakeUserPresets.json
+
+# Object / binary artifacts
+*.o
+*.obj
+*.d
+*.su
+*.elf
+*.bin
+*.hex
+*.map
+*.list
+*.lst
+
+# IDE metadata
+.settings/
+.metadata/
+
+# VS Code local caches
+.vscode/ipch/
+.vscode/.browse.VC.db*

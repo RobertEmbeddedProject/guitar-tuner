@@ -1,0 +1,7 @@
+{
+  "cmake.configureOnOpen": true,
+  "cmake.generator": "Ninja",
+  "cmake.buildDirectory": "${workspaceFolder}/build",
+  "cmake.sourceDirectory": "${workspaceFolder}",
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
+}
