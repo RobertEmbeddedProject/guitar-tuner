@@ -1,4 +1,4 @@
-<img width="1134" height="4032" alt="IMG_9422" src="https://github.com/user-attachments/assets/9a6ff9b9-6b3c-4a9e-8b90-c7a107a99c02" />
+<img width="1134" height="2016" alt="IMG_9422" src="https://github.com/user-attachments/assets/9a6ff9b9-6b3c-4a9e-8b90-c7a107a99c02" />
 
 # STM32 Guitar Tuner
 
