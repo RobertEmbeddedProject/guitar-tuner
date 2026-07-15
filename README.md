@@ -1,4 +1,5 @@
-<img width="2268" height="4032" alt="IMG_9404" src="https://github.com/user-attachments/assets/a0b0e141-61a9-40ea-afe0-ecd6adf7bde3" />
+<img width="1134" height="4032" alt="IMG_9422" src="https://github.com/user-attachments/assets/9a6ff9b9-6b3c-4a9e-8b90-c7a107a99c02" />
+
 # STM32 Guitar Tuner
 
 A real-time embedded guitar tuner written in C for the STM32F767ZI. The firmware uses timer-triggered ADC sampling, circular DMA acquisition, and a custom YIN pitch detector to estimate the fundamental frequency of a guitar signal and display tuning error across a 19-position LED indicator.
